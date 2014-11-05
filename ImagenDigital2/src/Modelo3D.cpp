@@ -166,9 +166,9 @@ void Modelo3D::PintarAlambres() {
 				ListaPuntos3d[ListaCaras[i].getC()].getY(),
 				ListaPuntos3d[ListaCaras[i].getC()].getZ());
 		//glColor3f(0.0f, 0.0f, 1.0f);
-		glVertex3f(ListaPuntos3d[ListaCaras[i].getA()].getX(),
-				ListaPuntos3d[ListaCaras[i].getA()].getY(),
-				ListaPuntos3d[ListaCaras[i].getA()].getZ());
+		//glVertex3f(ListaPuntos3d[ListaCaras[i].getA()].getX(),
+			//	ListaPuntos3d[ListaCaras[i].getA()].getY(),
+				//ListaPuntos3d[ListaCaras[i].getA()].getZ());
 
 		glDisable(GL_LIGHT0);
 		glDisable(GL_LIGHTING);

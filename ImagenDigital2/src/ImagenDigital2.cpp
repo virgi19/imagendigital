@@ -47,13 +47,29 @@ void onMenu(int opcion) {
 	glutPostRedisplay();
 }
 
-void onMouse(int button, int state, int x, int y) {
-	if ((button == GLUT_LEFT_BUTTON) & (state == GLUT_DOWN)) {
-		x0 = x;
-		y0 = y; //actualiza los valores de x,y
-	}
+void creacionMenu(void) {
+
+	int menuFondo, menuDibujo, menuPrincipal;
+
+	menuFondo = glutCreateMenu(onMenu);
+	glutAddMenuEntry("Negro", FONDO1);
+	glutAddMenuEntry("Verde oscuro", FONDO2);
+	glutAddMenuEntry("Azul oscuro", FONDO3);
+
+	menuDibujo = glutCreateMenu(onMenu);
+	glutAddMenuEntry("Blanco", DIBUJO1);
+	glutAddMenuEntry("Verde claro", DIBUJO2);
+	glutAddMenuEntry("Azul claro", DIBUJO3);
+
+	menuPrincipal = glutCreateMenu(onMenu);
+	glutAddSubMenu("Color de fondo", menuFondo);
+	glutAddSubMenu("Color de dibujo", menuDibujo);
+
+	glutAttachMenu(GLUT_RIGHT_BUTTON);
 }
 
+//Esta función no la vamos a a utilizar ya que nostros queremos dibujar
+//figuras distintas, no sólo una tetera.
 void display(void) {
 	float colores[6][3] = { { 0.00f, 0.00f, 0.00f }, // 0 - negro
 			{ 0.06f, 0.25f, 0.13f }, // 1 - verde oscuro
@@ -71,20 +87,11 @@ void display(void) {
 	glutSwapBuffers();
 }
 
-void creacionMenu(void) {
-	int menuFondo, menuDibujo, menuPrincipal;
-	menuFondo = glutCreateMenu(onMenu);
-	glutAddMenuEntry("Negro", FONDO1);
-	glutAddMenuEntry("Verde oscuro", FONDO2);
-	glutAddMenuEntry("Azul oscuro", FONDO3);
-	menuDibujo = glutCreateMenu(onMenu);
-	glutAddMenuEntry("Blanco", DIBUJO1);
-	glutAddMenuEntry("Verde claro", DIBUJO2);
-	glutAddMenuEntry("Azul claro", DIBUJO3);
-	menuPrincipal = glutCreateMenu(onMenu);
-	glutAddSubMenu("Color de fondo", menuFondo);
-	glutAddSubMenu("Color de dibujo", menuDibujo);
-	glutAttachMenu(GLUT_RIGHT_BUTTON);
+void onMouse(int button, int state, int x, int y) {
+	if ((button == GLUT_LEFT_BUTTON) & (state == GLUT_DOWN)) {
+		x0 = x;
+		y0 = y; //actualiza los valores de x,y
+	}
 }
 
 void onMotion(int x, int y) {
@@ -93,16 +100,38 @@ void onMotion(int x, int y) {
 	xold = x;
 	yold = y;
 	cout << "X " << x << " Y " << y << endl;
-//glutPostRedisplay();
+	glutPostRedisplay();
+}
+
+void DibujarFigura() {
+
+	My_Model.Draw_Model(0.0, 20);
 }
 
 void PintarModelo() {
 
-	//display();
+	//Permite dibujar la figura que nosotros hayamos definido
+	glutDisplayFunc(DibujarFigura);
+
+
+	//Se llama a una función capaz de crear un menú con diversas
+	//funciones.
 	creacionMenu();
+
+	//Función que nos permite interactuar con la figura. Permite
+	//realizar rotaciones en la figura cuando dejamos pulsado el
+	//ratón.
 	glutMouseFunc(onMouse);
+
+	//Establece el giro de la figura modificando sus respectivos alfa
+	//y beta.
 	glutMotionFunc(onMotion);
-	My_Model.Draw_Model(0.0, 20);
+
+	//glutIdleFunc permite dibujar la esfera cuando la ventana
+	//está inactiva. Si no llamamos a esta función la ventana
+	//aparecerá inicialmente de color blanco sin mostrar nuestra figura.
+	//Sólo haría falta hacer click sobre la ventana para que se vea la figura.
+	glutIdleFunc(DibujarFigura);
 
 }
 
@@ -114,10 +143,7 @@ int main(int argc, char **argv) {
 	glutInitWindowSize(400, 400);
 	glutInitWindowPosition(100, 100);
 	window = glutCreateWindow("Planetario");
-	glutDisplayFunc(&PintarModelo);
-
-	//glutIdleFunc se utiliza principalmente para hacer que nuestro modelo pueda girar.
-	glutIdleFunc(&PintarModelo);
+	PintarModelo();
 	glutMainLoop();
 
 }
