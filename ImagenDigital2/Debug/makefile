@@ -44,7 +44,7 @@ all: ImagenDigital2
 ImagenDigital2: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: GCC C++ Linker'
-	g++  -o "ImagenDigital2" $(OBJS) $(USER_OBJS) $(LIBS)
+	g++ -L"C:\Users\Virgilio\Desktop\Universidad\4 AÑO\ID\glut-3.7" -o "ImagenDigital2" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 

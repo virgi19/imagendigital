@@ -170,6 +170,7 @@ void Modelo3D::PintarAlambres() {
 				ListaPuntos3d[ListaCaras[i].getA()].getY(),
 				ListaPuntos3d[ListaCaras[i].getA()].getZ());
 
+		glDisable(GL_LIGHT0);
 		glDisable(GL_LIGHTING);
 		glEnd();
 

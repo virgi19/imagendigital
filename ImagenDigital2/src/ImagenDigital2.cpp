@@ -80,7 +80,7 @@ void creacionMenu(void) {
 	menuDibujo = glutCreateMenu(onMenu);
 	glutAddMenuEntry("Blanco", DIBUJO1);
 	glutAddMenuEntry("Verde claro", DIBUJO2);
-	glutAddMenuEntry("Azul claro",DIBUJO3);
+	glutAddMenuEntry("Azul claro", DIBUJO3);
 	menuPrincipal = glutCreateMenu(onMenu);
 	glutAddSubMenu("Color de fondo", menuFondo);
 	glutAddSubMenu("Color de dibujo", menuDibujo);
@@ -96,9 +96,9 @@ void onMotion(int x, int y) {
 //glutPostRedisplay();
 }
 
-
 void PintarModelo() {
 
+	//display();
 	creacionMenu();
 	glutMouseFunc(onMouse);
 	glutMotionFunc(onMotion);
@@ -115,6 +115,8 @@ int main(int argc, char **argv) {
 	glutInitWindowPosition(100, 100);
 	window = glutCreateWindow("Planetario");
 	glutDisplayFunc(&PintarModelo);
+
+	//glutIdleFunc se utiliza principalmente para hacer que nuestro modelo pueda girar.
 	glutIdleFunc(&PintarModelo);
 	glutMainLoop();
 
