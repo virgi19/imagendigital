@@ -140,7 +140,7 @@ void Modelo3D::PintarSolido() {
 	}
 }
 
-void Modelo3D::PintarAlambres() {
+void Modelo3D::PintarAlambres(float colorAlambre[] ) {
 
 	for (int i = 0; i < this->ListaCaras.size(); i++) {
 
@@ -153,7 +153,9 @@ void Modelo3D::PintarAlambres() {
 		glEnable(GL_LIGHTING);
 		glEnable(GL_LIGHT0);
 
-		glColor3f(1.0f, 0.0f, 0.0f);
+		//Aquí establecemos el color de las alambres
+		glColor3f(colorAlambre[0], colorAlambre[1], colorAlambre[2]);
+
 		glVertex3f(ListaPuntos3d[ListaCaras[i].getA()].getX(),
 				ListaPuntos3d[ListaCaras[i].getA()].getY(),
 				ListaPuntos3d[ListaCaras[i].getA()].getZ());
@@ -177,7 +179,7 @@ void Modelo3D::PintarAlambres() {
 	}
 }
 
-void Modelo3D::Draw_Model(float scale_from_editor, int size_axes) {
+void Modelo3D::Draw_Model(float scale_from_editor, int size_axes, float colorFondo[], float colorAlambre[]) {
 
 	GLfloat material_difuso[4], material_ambiente[4], material_specular[4],
 			material_emission[4];
@@ -185,7 +187,8 @@ void Modelo3D::Draw_Model(float scale_from_editor, int size_axes) {
 			rotacion[4];
 	GLfloat brillo;
 
-	glClearColor(0.f, 0.f, 0.f, 0.f);
+	//Aquí establecemos el color del fondo
+	glClearColor(colorFondo[0], colorFondo[1], colorFondo[2], 1.0f);
 	glClearStencil(0);
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
@@ -202,7 +205,7 @@ void Modelo3D::Draw_Model(float scale_from_editor, int size_axes) {
 	int tecla = 0;
 	switch (tecla) {
 	case 0:
-		PintarAlambres();
+		PintarAlambres(colorAlambre);
 		break;
 
 	case 1:
@@ -211,7 +214,7 @@ void Modelo3D::Draw_Model(float scale_from_editor, int size_axes) {
 
 	}
 
-	PintarAlambres();
+	//PintarAlambres();
 
 	glFlush();
 	glutSwapBuffers();

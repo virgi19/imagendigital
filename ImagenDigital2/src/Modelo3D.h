@@ -39,8 +39,8 @@ public:
 	void setVertices(const int val);
 	void Load_Model(char fileName[50]);
 	void PintarSolido();
-	void PintarAlambres();
-	void Draw_Model(float scale_from_editor, int size_axes);
+	void PintarAlambres(float colorAlambre[]);
+	void Draw_Model(float scale_from_editor, int size_axes, float colorFondo[], float colorAlambre[]);
 	float Model_color[3];
 	ListaFaces ListaCaras;
 	ListaVertex ListaPuntos3d;

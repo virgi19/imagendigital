@@ -13,7 +13,11 @@ using namespace std;
 
 int window;
 Modelo3D My_Model = Modelo3D();
+
+//Por defecto cuando iDibujo vale e se pinta loa figura de color blanco
 int iDibujo = 3;
+
+//Por defecto cuando iFondo vale 0 se pinta el fondo de color negro
 int iFondo = 0;
 typedef enum {
 	FONDO1, FONDO2, FONDO3, FONDO4, DIBUJO1, DIBUJO2, DIBUJO3, DIBUJO4
@@ -105,7 +109,17 @@ void onMotion(int x, int y) {
 
 void DibujarFigura() {
 
-	My_Model.Draw_Model(0.0, 20);
+	//Matriz de floats que contiene los valores de los distintos colores
+	float colores[6][3] = { { 0.00f, 0.00f, 0.00f }, // 0 - negro
+				{ 0.06f, 0.25f, 0.13f }, // 1 - verde oscuro
+				{ 0.10f, 0.07f, 0.33f }, // 2 - azul oscuro
+				{ 1.00f, 1.00f, 1.00f }, // 3 - blanco
+				{ 0.12f, 0.50f, 0.26f }, // 4 - verde claro
+				{ 0.20f, 0.14f, 0.66f }, // 5 - azul claro
+				};
+
+	//Pasamos al Draw_Model los valores del fondo y del color de las alambres o de las caras
+	My_Model.Draw_Model(0.0, 20, colores[iFondo], colores[iDibujo]);
 }
 
 void PintarModelo() {
