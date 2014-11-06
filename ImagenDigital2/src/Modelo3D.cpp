@@ -6,6 +6,7 @@ Modelo3D::Modelo3D() {
 	setVertices(0);
 	this->alfa = 0;
 	this->beta = 0;
+	this->tecla = 0;
 	this->Model_color[0] = 1.0;
 	this->Model_color[1] = 1.0;
 	this->Model_color[2] = 1.0;
@@ -53,6 +54,14 @@ int Modelo3D::getVertices() {
 void Modelo3D::setVertices(const int val) {
 
 	this->_NumVertices = val;
+}
+
+unsigned Modelo3D::getTecla() {
+	return tecla;
+}
+
+void Modelo3D::setTecla(unsigned tecla) {
+	this->tecla = tecla;
 }
 
 void Modelo3D::Load_Model(char fileName[50])
@@ -105,19 +114,23 @@ void Modelo3D::Load_Model(char fileName[50])
 
 }
 
-void Modelo3D::PintarSolido() {
+//Cuando vayamos a pintar sólido tenemos que pintar triángulos,
+//es decir, necesitamos hacer un glBegin(GL_TRIANGLES)
+void Modelo3D::PintarSolido(float colorSolido[]) {
 
 	for (int i = 0; i < this->ListaCaras.size(); i++) {
 
 		//glPopMatrix();
 		//glPushMatrix();
 
-		//Establecer un color sólido
-		glBegin(GL_POLYGON);
+		//Establecer un color sólido basándonos
+		//en un relleno con triángulos
+		glBegin(GL_TRIANGLES);
 		glEnable(GL_LIGHTING);
 		glEnable(GL_LIGHT0);
 
-		glColor3f(1.0f, 0.0f, 0.0f);
+		glColor3f(colorSolido[0], colorSolido[1], colorSolido[2]);
+
 		glVertex3f(ListaPuntos3d[ListaCaras[i].getA()].getX(),
 				ListaPuntos3d[ListaCaras[i].getA()].getY(),
 				ListaPuntos3d[ListaCaras[i].getA()].getZ());
@@ -203,23 +216,27 @@ void Modelo3D::Draw_Model(float scale_from_editor, int size_axes,
 	glRotated(this->alfa, 1.0f, 0.0f, 0.0f);
 	glRotated(this->beta, 0.0f, 1.0f, 0.0f);
 
-	int tecla = 0;
-	switch (tecla) {
-	case 0:
-		PintarAlambres(colorAlambre);
-		break;
-
-	case 1:
-		PintarSolido();
-		break;
-
-	}
-
-	//PintarAlambres();
+	TipoPintura(colorAlambre);
 
 	glFlush();
 	glutSwapBuffers();
+}
 
+//Función para elegir entre el tipo de pintura que queremos
+//es decir, sólido o alambre
+void Modelo3D::TipoPintura(float colorAlambre[]) {
+
+	switch (getTecla()) {
+
+	case 32:
+		PintarSolido(colorAlambre);
+		break;
+
+	default:
+		PintarAlambres(colorAlambre);
+		break;
+
+	}
 }
 
 Modelo3D::~Modelo3D() {

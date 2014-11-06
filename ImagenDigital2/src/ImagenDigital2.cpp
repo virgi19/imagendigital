@@ -107,6 +107,12 @@ void onMotion(int x, int y) {
 	glutPostRedisplay();
 }
 
+//Permite conocer qué tecla hemos pulsado
+void TeclaPulsada(unsigned char key, int x, int y){
+
+	My_Model.setTecla(key);
+}
+
 void DibujarFigura() {
 
 	//Matriz de floats que contiene los valores de los distintos colores
@@ -146,6 +152,11 @@ void PintarModelo() {
 	//aparecerá inicialmente de color blanco sin mostrar nuestra figura.
 	//Sólo haría falta hacer click sobre la ventana para que se vea la figura.
 	glutIdleFunc(DibujarFigura);
+
+
+	//Mediante glutKeyboardFunc cambiamos la pintura del
+	//elemento que se muestra en la pantalla
+	glutKeyboardFunc(TeclaPulsada);
 
 }
 
