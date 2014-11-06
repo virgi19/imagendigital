@@ -14,6 +14,7 @@ using namespace std;
 
 typedef std::vector<Cara> ListaFaces;
 typedef std::vector<Punto3D> ListaVertex;
+typedef std::vector<float> Normales;
 
 class Modelo3D: public Punto3D, public Cara {
 
@@ -33,22 +34,29 @@ public:
 	Modelo3D(const int ncaras, const int nvertices);
 	~Modelo3D();
 	void init_lights();
+
+	//Getters y Setters
 	int getCaras();
 	void setCaras(const int val);
 	int getVertices();
 	void setVertices(const int val);
 	unsigned getTecla();
 	void setTecla(unsigned tecla);
+	void setModelColor(float color[]);
+
+
+	//Funciones para pintar
 	void Load_Model(char fileName[50]);
-	void PintarSolido(float colorSolido[]);
-	void PintarAlambres(float colorAlambre[]);
+	void PintarSolido();
+	void PintarAlambres();
 	void Draw_Model(float scale_from_editor, int size_axes, float colorFondo[],
 			float colorAlambre[]);
-	void TipoPintura(float colorAlambre[]);
+	void TipoPintura();
 
 	float Model_color[3];
 	ListaFaces ListaCaras;
 	ListaVertex ListaPuntos3d;
+	Normales NormalCaras;
 
 };
 

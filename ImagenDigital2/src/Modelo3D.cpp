@@ -64,6 +64,13 @@ void Modelo3D::setTecla(unsigned tecla) {
 	this->tecla = tecla;
 }
 
+void Modelo3D::setModelColor(float color[]){
+
+	Model_color[0] = color[0];
+	Model_color[1] = color[1];
+	Model_color[2] = color[2];
+}
+
 void Modelo3D::Load_Model(char fileName[50])
 
 {
@@ -116,7 +123,7 @@ void Modelo3D::Load_Model(char fileName[50])
 
 //Cuando vayamos a pintar sólido tenemos que pintar triángulos,
 //es decir, necesitamos hacer un glBegin(GL_TRIANGLES)
-void Modelo3D::PintarSolido(float colorSolido[]) {
+void Modelo3D::PintarSolido() {
 
 	for (int i = 0; i < this->ListaCaras.size(); i++) {
 
@@ -129,7 +136,7 @@ void Modelo3D::PintarSolido(float colorSolido[]) {
 		glEnable(GL_LIGHTING);
 		glEnable(GL_LIGHT0);
 
-		glColor3f(colorSolido[0], colorSolido[1], colorSolido[2]);
+		glColor3f(Model_color[0], Model_color[1], Model_color[2]);
 
 		glVertex3f(ListaPuntos3d[ListaCaras[i].getA()].getX(),
 				ListaPuntos3d[ListaCaras[i].getA()].getY(),
@@ -153,7 +160,7 @@ void Modelo3D::PintarSolido(float colorSolido[]) {
 	}
 }
 
-void Modelo3D::PintarAlambres(float colorAlambre[]) {
+void Modelo3D::PintarAlambres() {
 
 	for (int i = 0; i < this->ListaCaras.size(); i++) {
 
@@ -167,7 +174,7 @@ void Modelo3D::PintarAlambres(float colorAlambre[]) {
 		glEnable(GL_LIGHT0);
 
 		//Aquí establecemos el color de las alambres
-		glColor3f(colorAlambre[0], colorAlambre[1], colorAlambre[2]);
+		glColor3f(Model_color[0], Model_color[1], Model_color[2]);
 
 		glVertex3f(ListaPuntos3d[ListaCaras[i].getA()].getX(),
 				ListaPuntos3d[ListaCaras[i].getA()].getY(),
@@ -216,7 +223,9 @@ void Modelo3D::Draw_Model(float scale_from_editor, int size_axes,
 	glRotated(this->alfa, 1.0f, 0.0f, 0.0f);
 	glRotated(this->beta, 0.0f, 1.0f, 0.0f);
 
-	TipoPintura(colorAlambre);
+	//Poner color al modelo
+	setModelColor(colorAlambre);
+	TipoPintura();
 
 	glFlush();
 	glutSwapBuffers();
@@ -224,16 +233,16 @@ void Modelo3D::Draw_Model(float scale_from_editor, int size_axes,
 
 //Función para elegir entre el tipo de pintura que queremos
 //es decir, sólido o alambre
-void Modelo3D::TipoPintura(float colorAlambre[]) {
+void Modelo3D::TipoPintura() {
 
 	switch (getTecla()) {
 
 	case 32:
-		PintarSolido(colorAlambre);
+		PintarSolido();
 		break;
 
 	default:
-		PintarAlambres(colorAlambre);
+		PintarAlambres();
 		break;
 
 	}

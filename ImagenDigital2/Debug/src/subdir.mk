@@ -5,18 +5,21 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
 ../src/Cara.cpp \
+../src/Iluminacion.cpp \
 ../src/ImagenDigital2.cpp \
 ../src/Modelo3D.cpp \
 ../src/Punto3D.cpp 
 
 OBJS += \
 ./src/Cara.o \
+./src/Iluminacion.o \
 ./src/ImagenDigital2.o \
 ./src/Modelo3D.o \
 ./src/Punto3D.o 
 
 CPP_DEPS += \
 ./src/Cara.d \
+./src/Iluminacion.d \
 ./src/ImagenDigital2.d \
 ./src/Modelo3D.d \
 ./src/Punto3D.d 
