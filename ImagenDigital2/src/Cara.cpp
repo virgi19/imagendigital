@@ -21,6 +21,14 @@ Cara::Cara(const int A, const int B, const int C){
 	this->_C = C;
 }
 
+Cara::Cara(const int A, const int B, const int C, Normal normal){
+
+	this->_A = A;
+	this->_B = B;
+	this->_C = C;
+	this->normal = normal;
+}
+
 int Cara::getA(){
 
 	return this->_A;
@@ -57,3 +65,10 @@ Cara::~Cara(){
 
 }
 
+const Normal& Cara::getNormal() const {
+	return normal;
+}
+
+void Cara::setNormal(const Normal& normal) {
+	this->normal = normal;
+}

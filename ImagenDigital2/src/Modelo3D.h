@@ -16,7 +16,6 @@ using namespace std;
 
 typedef std::vector<Cara> ListaFaces;
 typedef std::vector<Punto3D> ListaVertex;
-typedef std::vector<Normal> Normales;
 
 class Modelo3D: public Punto3D, public Cara {
 
@@ -36,7 +35,7 @@ public:
 	Modelo3D(const int ncaras, const int nvertices);
 	~Modelo3D();
 	void init_lights();
-	void CargarNormales(int FaceNumber);
+	const Normal& CargarNormales(int FaceNumber);
 
 	//Getters y Setters
 	int getCaras();
@@ -59,7 +58,6 @@ public:
 	float Model_color[3];
 	ListaFaces ListaCaras;
 	ListaVertex ListaPuntos3D;
-	Normales NormalCaras;
 
 };
 

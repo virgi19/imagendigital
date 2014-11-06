@@ -77,6 +77,7 @@ void Modelo3D::Load_Model(char fileName[50])
 	FILE *fich;
 	int NVertex, NFaces, VertexNumber, FaceNumber, N, A, B, C;
 	float X, Y, Z, len;
+	Normal normal;
 	char cad1[20], cad2[20], cad3[20], cad4[20];
 	char cadena[100]; // Lo suf. larga para leer una línea
 
@@ -114,16 +115,20 @@ void Modelo3D::Load_Model(char fileName[50])
 				fscanf(fich, "%[Face]%d: %[A:]%d %[B:]%d %[C:]%d\n", cad1,
 						&FaceNumber, cad2, &A, cad3, &B, cad4, &C);
 				fgets(cadena, 100, fich);
-				ListaCaras[FaceNumber] = Cara(A, B, C);
+				ListaCaras[FaceNumber] = Cara(A, B, C, normal);
 
-				//CargarNormales(FaceNumber);
+				//Cargamos las normales de las caras
+				normal = CargarNormales(FaceNumber);
+
+				ListaCaras[FaceNumber] = Cara(A, B, C, normal);
 			}
 	}
 	fclose(fich);
 
 }
 
-void Modelo3D::CargarNormales(int FaceNumber) {
+//Función que nos permite cargar las normales de las caras
+const Normal& Modelo3D::CargarNormales(int FaceNumber) {
 
 	float ax = ListaPuntos3D[ListaCaras[FaceNumber].getA()].getX()
 			- ListaPuntos3D[ListaCaras[FaceNumber].getB()].getX(); //  X[A] - X[B];
@@ -138,19 +143,23 @@ void Modelo3D::CargarNormales(int FaceNumber) {
 	float bz = ListaPuntos3D[ListaCaras[FaceNumber].getB()].getZ()
 			- ListaPuntos3D[ListaCaras[FaceNumber].getC()].getZ(); //  Z[B] - Z[C];
 
-	NormalCaras[FaceNumber].setA((ay * bz) - (az * by));
-	NormalCaras[FaceNumber].setB((az * bx) - (ax * bz));
-	NormalCaras[FaceNumber].setC((ax * by) - (ay * bx));
 
-	float x = NormalCaras[FaceNumber].getA();
-	float y = NormalCaras[FaceNumber].getA();
-	float z = NormalCaras[FaceNumber].getA();
+	Normal normal = Normal();
+
+	normal.setA((ay * bz) - (az * by));
+	normal.setB((az * bx) - (ax * bz));
+	normal.setC((ax * by) - (ay * bx));
+
+	float x = normal.getA();
+	float y = normal.getB();
+	float z = normal.getC();
 
 	float len = sqrt(x * x + y * y + z * z);
 
-	NormalCaras[FaceNumber].setA(x / len);
-	NormalCaras[FaceNumber].setB(y / len);
-	NormalCaras[FaceNumber].setC(z / len);
+	normal = Normal(x / len, y / len, z / len);
+
+	return normal;
+
 }
 
 //Cuando vayamos a pintar sólido tenemos que pintar triángulos,
