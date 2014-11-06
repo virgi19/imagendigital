@@ -19,13 +19,14 @@ int iDibujo = 3;
 
 //Por defecto cuando iFondo vale 0 se pinta el fondo de color negro
 int iFondo = 0;
+int x1;
+int x2;
+
 typedef enum {
 	FONDO1, FONDO2, FONDO3, FONDO4, DIBUJO1, DIBUJO2, DIBUJO3, DIBUJO4
 } opcionesMenu;
 float xold;
 float yold;
-int x0;
-int y0;
 
 void onMenu(int opcion) {
 	switch (opcion) {
@@ -93,8 +94,9 @@ void display(void) {
 
 void onMouse(int button, int state, int x, int y) {
 	if ((button == GLUT_LEFT_BUTTON) & (state == GLUT_DOWN)) {
-		x0 = x;
-		y0 = y; //actualiza los valores de x,y
+		x1 = x;
+		x2 = y;
+		//y0 = y; //actualiza los valores de x,y
 	}
 }
 

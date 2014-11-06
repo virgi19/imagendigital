@@ -64,7 +64,7 @@ void Modelo3D::setTecla(unsigned tecla) {
 	this->tecla = tecla;
 }
 
-void Modelo3D::setModelColor(float color[]){
+void Modelo3D::setModelColor(float color[]) {
 
 	Model_color[0] = color[0];
 	Model_color[1] = color[1];
@@ -76,7 +76,7 @@ void Modelo3D::Load_Model(char fileName[50])
 {
 	FILE *fich;
 	int NVertex, NFaces, VertexNumber, FaceNumber, N, A, B, C;
-	float X, Y, Z;
+	float X, Y, Z, len;
 	char cad1[20], cad2[20], cad3[20], cad4[20];
 	char cadena[100]; // Lo suf. larga para leer una línea
 
@@ -98,15 +98,15 @@ void Modelo3D::Load_Model(char fileName[50])
 		cout << "Nfaces and NVertex captured....." << NVertex << "  " << NFaces
 				<< endl;
 		ListaCaras.resize(getCaras());
-		ListaPuntos3d.resize(getVertices());
+		ListaPuntos3D.resize(getVertices());
 		if (strncmp(cadena, "Vertex list:", 12) == 0) // Vertex List in file
 			for (N = 1; N <= NVertex; N++) {
 				fscanf(fich, "%[A-Za-z ]%d: %[X:] %f %[Y:] %f %[Z:] %f    \n",
 						cad1, &VertexNumber, cad2, &X, cad3, &Y, cad4, &Z);
 				cout << "Nº de vértice....." << VertexNumber << endl;
-				ListaPuntos3d[VertexNumber].setX(X);
-				ListaPuntos3d[VertexNumber].setY(Y);
-				ListaPuntos3d[VertexNumber].setZ(Z);
+				ListaPuntos3D[VertexNumber].setX(X);
+				ListaPuntos3D[VertexNumber].setY(Y);
+				ListaPuntos3D[VertexNumber].setZ(Z);
 
 			}
 		if (strncmp(cadena, "Face list:", 10) == 0) // Face List in model file
@@ -115,10 +115,42 @@ void Modelo3D::Load_Model(char fileName[50])
 						&FaceNumber, cad2, &A, cad3, &B, cad4, &C);
 				fgets(cadena, 100, fich);
 				ListaCaras[FaceNumber] = Cara(A, B, C);
+
+				//CargarNormales(FaceNumber);
 			}
 	}
 	fclose(fich);
 
+}
+
+void Modelo3D::CargarNormales(int FaceNumber) {
+
+	float ax = ListaPuntos3D[ListaCaras[FaceNumber].getA()].getX()
+			- ListaPuntos3D[ListaCaras[FaceNumber].getB()].getX(); //  X[A] - X[B];
+	float ay = ListaPuntos3D[ListaCaras[FaceNumber].getA()].getY()
+			- ListaPuntos3D[ListaCaras[FaceNumber].getB()].getY(); //  Y[A] - Y[B];
+	float az = ListaPuntos3D[ListaCaras[FaceNumber].getA()].getZ()
+			- ListaPuntos3D[ListaCaras[FaceNumber].getB()].getZ(); //  Z[A] - Z[B];
+	float bx = ListaPuntos3D[ListaCaras[FaceNumber].getB()].getX()
+			- ListaPuntos3D[ListaCaras[FaceNumber].getC()].getX(); //  X[B] - X[C];
+	float by = ListaPuntos3D[ListaCaras[FaceNumber].getB()].getY()
+			- ListaPuntos3D[ListaCaras[FaceNumber].getC()].getY(); //  Y[B] - Y[C];
+	float bz = ListaPuntos3D[ListaCaras[FaceNumber].getB()].getZ()
+			- ListaPuntos3D[ListaCaras[FaceNumber].getC()].getZ(); //  Z[B] - Z[C];
+
+	NormalCaras[FaceNumber].setA((ay * bz) - (az * by));
+	NormalCaras[FaceNumber].setB((az * bx) - (ax * bz));
+	NormalCaras[FaceNumber].setC((ax * by) - (ay * bx));
+
+	float x = NormalCaras[FaceNumber].getA();
+	float y = NormalCaras[FaceNumber].getA();
+	float z = NormalCaras[FaceNumber].getA();
+
+	float len = sqrt(x * x + y * y + z * z);
+
+	NormalCaras[FaceNumber].setA(x / len);
+	NormalCaras[FaceNumber].setB(y / len);
+	NormalCaras[FaceNumber].setC(z / len);
 }
 
 //Cuando vayamos a pintar sólido tenemos que pintar triángulos,
@@ -138,21 +170,21 @@ void Modelo3D::PintarSolido() {
 
 		glColor3f(Model_color[0], Model_color[1], Model_color[2]);
 
-		glVertex3f(ListaPuntos3d[ListaCaras[i].getA()].getX(),
-				ListaPuntos3d[ListaCaras[i].getA()].getY(),
-				ListaPuntos3d[ListaCaras[i].getA()].getZ());
+		glVertex3f(ListaPuntos3D[ListaCaras[i].getA()].getX(),
+				ListaPuntos3D[ListaCaras[i].getA()].getY(),
+				ListaPuntos3D[ListaCaras[i].getA()].getZ());
 		//glColor3f(0.0f, 0.0f, 1.0f);
-		glVertex3f(ListaPuntos3d[ListaCaras[i].getB()].getX(),
-				ListaPuntos3d[ListaCaras[i].getB()].getY(),
-				ListaPuntos3d[ListaCaras[i].getB()].getZ());
+		glVertex3f(ListaPuntos3D[ListaCaras[i].getB()].getX(),
+				ListaPuntos3D[ListaCaras[i].getB()].getY(),
+				ListaPuntos3D[ListaCaras[i].getB()].getZ());
 		//glColor3f(0.0f, 0.0f, 1.0f);
-		glVertex3f(ListaPuntos3d[ListaCaras[i].getC()].getX(),
-				ListaPuntos3d[ListaCaras[i].getC()].getY(),
-				ListaPuntos3d[ListaCaras[i].getC()].getZ());
+		glVertex3f(ListaPuntos3D[ListaCaras[i].getC()].getX(),
+				ListaPuntos3D[ListaCaras[i].getC()].getY(),
+				ListaPuntos3D[ListaCaras[i].getC()].getZ());
 		//glColor3f(0.0f, 0.0f, 1.0f);
-		glVertex3f(ListaPuntos3d[ListaCaras[i].getA()].getX(),
-				ListaPuntos3d[ListaCaras[i].getA()].getY(),
-				ListaPuntos3d[ListaCaras[i].getA()].getZ());
+		glVertex3f(ListaPuntos3D[ListaCaras[i].getA()].getX(),
+				ListaPuntos3D[ListaCaras[i].getA()].getY(),
+				ListaPuntos3D[ListaCaras[i].getA()].getZ());
 
 		glDisable(GL_LIGHTING);
 		glEnd();
@@ -176,21 +208,21 @@ void Modelo3D::PintarAlambres() {
 		//Aquí establecemos el color de las alambres
 		glColor3f(Model_color[0], Model_color[1], Model_color[2]);
 
-		glVertex3f(ListaPuntos3d[ListaCaras[i].getA()].getX(),
-				ListaPuntos3d[ListaCaras[i].getA()].getY(),
-				ListaPuntos3d[ListaCaras[i].getA()].getZ());
+		glVertex3f(ListaPuntos3D[ListaCaras[i].getA()].getX(),
+				ListaPuntos3D[ListaCaras[i].getA()].getY(),
+				ListaPuntos3D[ListaCaras[i].getA()].getZ());
 		//glColor3f(0.0f, 0.0f, 1.0f);
-		glVertex3f(ListaPuntos3d[ListaCaras[i].getB()].getX(),
-				ListaPuntos3d[ListaCaras[i].getB()].getY(),
-				ListaPuntos3d[ListaCaras[i].getB()].getZ());
+		glVertex3f(ListaPuntos3D[ListaCaras[i].getB()].getX(),
+				ListaPuntos3D[ListaCaras[i].getB()].getY(),
+				ListaPuntos3D[ListaCaras[i].getB()].getZ());
 		//glColor3f(0.0f, 0.0f, 1.0f);
-		glVertex3f(ListaPuntos3d[ListaCaras[i].getC()].getX(),
-				ListaPuntos3d[ListaCaras[i].getC()].getY(),
-				ListaPuntos3d[ListaCaras[i].getC()].getZ());
+		glVertex3f(ListaPuntos3D[ListaCaras[i].getC()].getX(),
+				ListaPuntos3D[ListaCaras[i].getC()].getY(),
+				ListaPuntos3D[ListaCaras[i].getC()].getZ());
 		//glColor3f(0.0f, 0.0f, 1.0f);
-		glVertex3f(ListaPuntos3d[ListaCaras[i].getA()].getX(),
-				ListaPuntos3d[ListaCaras[i].getA()].getY(),
-				ListaPuntos3d[ListaCaras[i].getA()].getZ());
+		glVertex3f(ListaPuntos3D[ListaCaras[i].getA()].getX(),
+				ListaPuntos3D[ListaCaras[i].getA()].getY(),
+				ListaPuntos3D[ListaCaras[i].getA()].getZ());
 
 		glDisable(GL_LIGHT0);
 		glDisable(GL_LIGHTING);

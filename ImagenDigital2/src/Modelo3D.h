@@ -9,6 +9,8 @@
 #include <GL/glu.h>
 #include <GL/glut.h>
 #include <string.h>
+#include <math.h>
+#include "Normal.h"
 
 using namespace std;
 
@@ -34,6 +36,7 @@ public:
 	Modelo3D(const int ncaras, const int nvertices);
 	~Modelo3D();
 	void init_lights();
+	void CargarNormales(int FaceNumber);
 
 	//Getters y Setters
 	int getCaras();
@@ -55,7 +58,7 @@ public:
 
 	float Model_color[3];
 	ListaFaces ListaCaras;
-	ListaVertex ListaPuntos3d;
+	ListaVertex ListaPuntos3D;
 	Normales NormalCaras;
 
 };

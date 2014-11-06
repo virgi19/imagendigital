@@ -8,6 +8,7 @@ CPP_SRCS += \
 ../src/Iluminacion.cpp \
 ../src/ImagenDigital2.cpp \
 ../src/Modelo3D.cpp \
+../src/Normal.cpp \
 ../src/Punto3D.cpp 
 
 OBJS += \
@@ -15,6 +16,7 @@ OBJS += \
 ./src/Iluminacion.o \
 ./src/ImagenDigital2.o \
 ./src/Modelo3D.o \
+./src/Normal.o \
 ./src/Punto3D.o 
 
 CPP_DEPS += \
@@ -22,6 +24,7 @@ CPP_DEPS += \
 ./src/Iluminacion.d \
 ./src/ImagenDigital2.d \
 ./src/Modelo3D.d \
+./src/Normal.d \
 ./src/Punto3D.d 
 
 
