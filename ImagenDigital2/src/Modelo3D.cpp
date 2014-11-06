@@ -143,7 +143,6 @@ const Normal& Modelo3D::CargarNormales(int FaceNumber) {
 	float bz = ListaPuntos3D[ListaCaras[FaceNumber].getB()].getZ()
 			- ListaPuntos3D[ListaCaras[FaceNumber].getC()].getZ(); //  Z[B] - Z[C];
 
-
 	Normal normal = Normal();
 
 	normal.setA((ay * bz) - (az * by));
@@ -267,6 +266,7 @@ void Modelo3D::Draw_Model(float scale_from_editor, int size_axes,
 	//Poner color al modelo
 	setModelColor(colorAlambre);
 	TipoPintura();
+	PintarEjes();
 
 	glFlush();
 	glutSwapBuffers();
@@ -301,8 +301,33 @@ void Modelo3D::TipoPintura() {
 	}
 }
 
+void Modelo3D::PintarEjes() {
+
+	//Pintar ejeX
+	glBegin(GL_LINES);
+	glColor3f(1.0, 0.0, 0.0);
+	glVertex3f(0.0f, 0.0f, 0.0f);
+	glVertex3f(400.0f, 0.0f, 0.0f);
+	glEnd();
+
+	//PintarEjeY
+	glBegin(GL_LINES);
+	glColor3f(0.0, 1.0, 0.0);
+	glVertex3f(0.0f, 0.0f, 0.0f);
+	glVertex3f(0.0f, 400.0f, 0.0f);
+	glEnd();
+
+	//PintarEjeZ
+	glBegin(GL_LINES);
+	glColor3f(0.0, 0.0, 1.0);
+	glVertex3f(0.0f, 0.0f, 0.0f);
+	glVertex3f(400.0f, 400.0f, -4.0f);
+	glEnd();
+}
+
 Modelo3D::~Modelo3D() {
 }
+
 /*
  * Modelo3D.cpp
  *

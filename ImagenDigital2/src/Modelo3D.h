@@ -56,6 +56,7 @@ public:
 	void Draw_Model(float scale_from_editor, int size_axes, float colorFondo[],
 			float colorAlambre[]);
 	void TipoPintura();
+	void PintarEjes();
 
 	float Model_color[3];
 	ListaFaces ListaCaras;
