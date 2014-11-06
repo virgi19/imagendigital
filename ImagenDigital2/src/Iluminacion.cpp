@@ -23,7 +23,8 @@ void Iluminacion::DesactivarIluminacionConstante() {
 void Iluminacion::ActivarIluminacionSuave() {
 
 	GLfloat light_ambient[] = { 1.0, 0.0, 0.0, 1.0 };
-	glLightfv(GL_LIGHT1, GL_AMBIENT, light_ambient);
+	glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
+	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
 	glShadeModel(GLU_SMOOTH);
 
@@ -32,6 +33,7 @@ void Iluminacion::ActivarIluminacionSuave() {
 void Iluminacion::DesactivarIluminacionSuave() {
 
 	glDisable(GL_LIGHT0);
+	glDisable(GL_LIGHTING);
 }
 
 Iluminacion::~Iluminacion() {

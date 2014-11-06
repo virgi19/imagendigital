@@ -274,13 +274,55 @@ void Modelo3D::Draw_Model(float scale_from_editor, int size_axes,
 
 void Modelo3D::IluminacionSuave() {
 
-	Iluminacion ilum = Iluminacion();
+	for (int i = 0; i < this->ListaCaras.size(); i++) {
 
-	ilum.ActivarIluminacionSuave();
+		//glPopMatrix();
+		//glPushMatrix();
 
-	PintarSolido();
+		//Establecer un color sólido basándonos
+		//en un relleno con triángulos
 
-	ilum.DesactivarIluminacionSuave();
+		GLfloat direccion[] = { ListaCaras[i].getNormal().getA(),
+				ListaCaras[i].getNormal().getB(),
+				ListaCaras[i].getNormal().getC() };
+
+		GLfloat direccionNormal[] = {0.0, 1.0, 0.0, 0.0};
+
+		GLfloat color[] = {Model_color[0], Model_color[1], Model_color[2]};
+
+		GLfloat light_ambient[] = { 0.0, 0.0, 0.0, 1.0 };
+		glEnable(GL_LIGHTING);
+		glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
+		glLightfv(GL_LIGHT0, GL_DIFFUSE, color);
+		glLightfv(GL_LIGHT0, GL_SPECULAR, color);
+		glLightfv(GL_LIGHT0, GL_POSITION, direccion);
+		glEnable(GL_LIGHT0);
+		glShadeModel(GLU_SMOOTH);
+
+		glBegin(GL_TRIANGLES);
+		glColor3f(Model_color[0], Model_color[1], Model_color[2]);
+
+		glVertex3f(ListaPuntos3D[ListaCaras[i].getA()].getX(),
+				ListaPuntos3D[ListaCaras[i].getA()].getY(),
+				ListaPuntos3D[ListaCaras[i].getA()].getZ());
+		//glColor3f(0.0f, 0.0f, 1.0f);
+		glVertex3f(ListaPuntos3D[ListaCaras[i].getB()].getX(),
+				ListaPuntos3D[ListaCaras[i].getB()].getY(),
+				ListaPuntos3D[ListaCaras[i].getB()].getZ());
+		//glColor3f(0.0f, 0.0f, 1.0f);
+		glVertex3f(ListaPuntos3D[ListaCaras[i].getC()].getX(),
+				ListaPuntos3D[ListaCaras[i].getC()].getY(),
+				ListaPuntos3D[ListaCaras[i].getC()].getZ());
+		//glColor3f(0.0f, 0.0f, 1.0f);
+		glVertex3f(ListaPuntos3D[ListaCaras[i].getA()].getX(),
+				ListaPuntos3D[ListaCaras[i].getA()].getY(),
+				ListaPuntos3D[ListaCaras[i].getA()].getZ());
+
+		glEnd();
+		glDisable(GL_LIGHT0);
+		glDisable(GL_LIGHTING);
+
+	}
 }
 
 //Función para elegir entre el tipo de pintura que queremos
