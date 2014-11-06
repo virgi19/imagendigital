@@ -14,7 +14,7 @@ using namespace std;
 
 typedef std::vector<Cara> ListaFaces;
 typedef std::vector<Punto3D> ListaVertex;
-typedef std::vector<float> Normales;
+typedef std::vector<Normal> Normales;
 
 class Modelo3D: public Punto3D, public Cara {
 
