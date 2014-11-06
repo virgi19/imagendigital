@@ -140,7 +140,7 @@ void Modelo3D::PintarSolido() {
 	}
 }
 
-void Modelo3D::PintarAlambres(float colorAlambre[] ) {
+void Modelo3D::PintarAlambres(float colorAlambre[]) {
 
 	for (int i = 0; i < this->ListaCaras.size(); i++) {
 
@@ -168,9 +168,9 @@ void Modelo3D::PintarAlambres(float colorAlambre[] ) {
 				ListaPuntos3d[ListaCaras[i].getC()].getY(),
 				ListaPuntos3d[ListaCaras[i].getC()].getZ());
 		//glColor3f(0.0f, 0.0f, 1.0f);
-		//glVertex3f(ListaPuntos3d[ListaCaras[i].getA()].getX(),
-			//	ListaPuntos3d[ListaCaras[i].getA()].getY(),
-				//ListaPuntos3d[ListaCaras[i].getA()].getZ());
+		glVertex3f(ListaPuntos3d[ListaCaras[i].getA()].getX(),
+				ListaPuntos3d[ListaCaras[i].getA()].getY(),
+				ListaPuntos3d[ListaCaras[i].getA()].getZ());
 
 		glDisable(GL_LIGHT0);
 		glDisable(GL_LIGHTING);
@@ -179,7 +179,8 @@ void Modelo3D::PintarAlambres(float colorAlambre[] ) {
 	}
 }
 
-void Modelo3D::Draw_Model(float scale_from_editor, int size_axes, float colorFondo[], float colorAlambre[]) {
+void Modelo3D::Draw_Model(float scale_from_editor, int size_axes,
+		float colorFondo[], float colorAlambre[]) {
 
 	GLfloat material_difuso[4], material_ambiente[4], material_specular[4],
 			material_emission[4];
