@@ -11,6 +11,7 @@
 #include <string.h>
 #include <math.h>
 #include "Normal.h"
+#include "Iluminacion.h"
 
 using namespace std;
 
@@ -51,6 +52,7 @@ public:
 	void Load_Model(char fileName[50]);
 	void PintarSolido();
 	void PintarAlambres();
+	void IluminacionSuave();
 	void Draw_Model(float scale_from_editor, int size_axes, float colorFondo[],
 			float colorAlambre[]);
 	void TipoPintura();

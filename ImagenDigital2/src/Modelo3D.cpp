@@ -272,6 +272,17 @@ void Modelo3D::Draw_Model(float scale_from_editor, int size_axes,
 	glutSwapBuffers();
 }
 
+void Modelo3D::IluminacionSuave() {
+
+	Iluminacion ilum = Iluminacion();
+
+	ilum.ActivarIluminacionSuave();
+
+	PintarSolido();
+
+	ilum.DesactivarIluminacionSuave();
+}
+
 //Función para elegir entre el tipo de pintura que queremos
 //es decir, sólido o alambre
 void Modelo3D::TipoPintura() {
@@ -279,7 +290,8 @@ void Modelo3D::TipoPintura() {
 	switch (getTecla()) {
 
 	case 32:
-		PintarSolido();
+		IluminacionSuave();
+		//PintarSolido();
 		break;
 
 	default:
