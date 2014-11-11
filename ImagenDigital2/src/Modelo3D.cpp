@@ -271,7 +271,6 @@ void Modelo3D::Draw_Model(float scale_from_editor, int size_axes,
 	glFlush();
 	glutSwapBuffers();
 
-	//jjdsjksdjkdjf jsjkajsadjdsa
 }
 
 void Modelo3D::IluminacionSuave() {
@@ -284,47 +283,83 @@ void Modelo3D::IluminacionSuave() {
 		//Establecer un color sólido basándonos
 		//en un relleno con triángulos
 
+		glEnable(GL_NORMALIZE);
+		glEnable(GL_CULL_FACE);
+
+		GLfloat posicion[] = {10.0f, 10.0f, 10.0f, 0.0f};
+		GLfloat ambiente[] = {0.5f, 0.25f, 0.5f, 0.0f};
+		GLfloat difusa[] = {1.0f, 1.0f, 0.25f, 0.5f};
+		GLfloat especular[] = {1.0f, 0.0f, 0.25f, 1.0f};
+
 		GLfloat direccion[] = { ListaCaras[i].getNormal().getA(),
 				ListaCaras[i].getNormal().getB(),
 				ListaCaras[i].getNormal().getC() };
 
-		GLfloat direccionNormal[] = { 0.0, 1.0, 0.0, 0.0 };
-		GLfloat light0pos[] = {1.0, 2.0, 3.0, 1.0};
+		//GLfloat direccionNormal[] = { 0.0, 1.0, 0.0, 0.0 };
+		//GLfloat light0pos[] = { 1.0, 2.0, 3.0, 1.0 };
 
-		GLfloat color[] = { Model_color[0], Model_color[1], Model_color[2] };
+		//Distinto de uno el foco se mueve
 
-		GLfloat light_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
-		//GLfloat light_ambient[] = { 1.0, 0.0, 0.0, 1.0 };
+		//GLfloat color[] = { Model_color[0], Model_color[1], Model_color[2] };
+
 		glEnable(GL_LIGHTING);
-		//glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
-		//glLightfv(GL_LIGHT0, GL_DIFFUSE, color);
-		//glLightfv(GL_LIGHT0, GL_SPECULAR, color);
-		//glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_FALSE);
-		glLightfv(GL_LIGHT0, GL_POSITION, light0pos);
-		glEnable(GL_LIGHT0);
+		glLightfv(GL_LIGHT1, GL_AMBIENT, ambiente);
+		glLightfv(GL_LIGHT1, GL_DIFFUSE, difusa);
+		glLightfv(GL_LIGHT1, GL_SPECULAR, especular);
+		glLightfv(GL_LIGHT1, GL_POSITION, posicion);
+
+		GLfloat posicion2[] = {50.0f, 50.0f, 10.0f, 0.0f};
+		GLfloat ambiente2[] = {0.5f, 0.5f, 0.5f, 0.0f};
+		GLfloat difusa2[] = {1.0f, 1.0f, 0.0f, 1.0f};
+		GLfloat especular2[]={0.5f, 0.0f, 0.0f, 1.0f};
+		glLightfv(GL_LIGHT2, GL_POSITION, posicion2);
+		glLightfv(GL_LIGHT2, GL_AMBIENT, ambiente2);
+		glLightfv(GL_LIGHT2, GL_SPECULAR, difusa2);
+		glLightfv(GL_LIGHT2, GL_DIFFUSE, especular2);
+
+		glEnable(GL_LIGHT1);
+		glEnable(GL_LIGHT2);
+		glEnable(GL_LIGHT3);
 		glShadeModel(GLU_SMOOTH);
 
 		glBegin(GL_TRIANGLES);
 		glColor3f(Model_color[0], Model_color[1], Model_color[2]);
 
+		glNormal3f(ListaPuntos3D[ListaCaras[i].getA()].getX(),
+				ListaPuntos3D[ListaCaras[i].getA()].getY(),
+				ListaPuntos3D[ListaCaras[i].getA()].getZ());
 		glVertex3f(ListaPuntos3D[ListaCaras[i].getA()].getX(),
 				ListaPuntos3D[ListaCaras[i].getA()].getY(),
 				ListaPuntos3D[ListaCaras[i].getA()].getZ());
+
 		//glColor3f(0.0f, 0.0f, 1.0f);
+		glNormal3f(ListaPuntos3D[ListaCaras[i].getB()].getX(),
+				ListaPuntos3D[ListaCaras[i].getB()].getY(),
+				ListaPuntos3D[ListaCaras[i].getB()].getZ());
 		glVertex3f(ListaPuntos3D[ListaCaras[i].getB()].getX(),
 				ListaPuntos3D[ListaCaras[i].getB()].getY(),
 				ListaPuntos3D[ListaCaras[i].getB()].getZ());
+
 		//glColor3f(0.0f, 0.0f, 1.0f);
+		glNormal3f(ListaPuntos3D[ListaCaras[i].getC()].getX(),
+				ListaPuntos3D[ListaCaras[i].getC()].getY(),
+				ListaPuntos3D[ListaCaras[i].getC()].getZ());
 		glVertex3f(ListaPuntos3D[ListaCaras[i].getC()].getX(),
 				ListaPuntos3D[ListaCaras[i].getC()].getY(),
 				ListaPuntos3D[ListaCaras[i].getC()].getZ());
+
 		//glColor3f(0.0f, 0.0f, 1.0f);
+		glNormal3f(ListaPuntos3D[ListaCaras[i].getA()].getX(),
+				ListaPuntos3D[ListaCaras[i].getA()].getY(),
+				ListaPuntos3D[ListaCaras[i].getA()].getZ());
 		glVertex3f(ListaPuntos3D[ListaCaras[i].getA()].getX(),
 				ListaPuntos3D[ListaCaras[i].getA()].getY(),
 				ListaPuntos3D[ListaCaras[i].getA()].getZ());
 
 		glEnd();
-		glDisable(GL_LIGHT0);
+		glDisable(GL_LIGHT3);
+		glDisable(GL_LIGHT2);
+		glDisable(GL_LIGHT1);
 		glDisable(GL_LIGHTING);
 
 	}
