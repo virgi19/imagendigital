@@ -270,6 +270,8 @@ void Modelo3D::Draw_Model(float scale_from_editor, int size_axes,
 
 	glFlush();
 	glutSwapBuffers();
+
+	//jjdsjksdjkdjf
 }
 
 void Modelo3D::IluminacionSuave() {
@@ -286,16 +288,19 @@ void Modelo3D::IluminacionSuave() {
 				ListaCaras[i].getNormal().getB(),
 				ListaCaras[i].getNormal().getC() };
 
-		GLfloat direccionNormal[] = {0.0, 1.0, 0.0, 0.0};
+		GLfloat direccionNormal[] = { 0.0, 1.0, 0.0, 0.0 };
+		GLfloat light0pos[] = {1.0, 2.0, 3.0, 1.0};
 
-		GLfloat color[] = {Model_color[0], Model_color[1], Model_color[2]};
+		GLfloat color[] = { Model_color[0], Model_color[1], Model_color[2] };
 
-		GLfloat light_ambient[] = { 0.0, 0.0, 0.0, 1.0 };
+		GLfloat light_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
+		//GLfloat light_ambient[] = { 1.0, 0.0, 0.0, 1.0 };
 		glEnable(GL_LIGHTING);
-		glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
-		glLightfv(GL_LIGHT0, GL_DIFFUSE, color);
-		glLightfv(GL_LIGHT0, GL_SPECULAR, color);
-		glLightfv(GL_LIGHT0, GL_POSITION, direccion);
+		//glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
+		//glLightfv(GL_LIGHT0, GL_DIFFUSE, color);
+		//glLightfv(GL_LIGHT0, GL_SPECULAR, color);
+		//glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_FALSE);
+		glLightfv(GL_LIGHT0, GL_POSITION, light0pos);
 		glEnable(GL_LIGHT0);
 		glShadeModel(GLU_SMOOTH);
 
