@@ -53,6 +53,7 @@ public:
 	void PintarSolido();
 	void PintarAlambres();
 	void IluminacionSuave();
+	void IluminacionPlana();
 	void Draw_Model(float scale_from_editor, int size_axes, float colorFondo[],
 			float colorAlambre[]);
 	void TipoPintura();
