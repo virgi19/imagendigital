@@ -271,7 +271,7 @@ void Modelo3D::Draw_Model(float scale_from_editor, int size_axes,
 	glFlush();
 	glutSwapBuffers();
 
-	//jjdsjksdjkdjf
+	//jjdsjksdjkdjf jsjkajsadjdsa
 }
 
 void Modelo3D::IluminacionSuave() {
