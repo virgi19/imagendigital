@@ -8,11 +8,16 @@
 
 #include <iostream>
 #include "Modelo3D.h"
+#include "Camera.h"
 
 using namespace std;
 
+unsigned char teclaPulsadaTipoPintura = 0;
+unsigned char teclaPulsadaFoco = 0;
 int window;
 Modelo3D My_Model = Modelo3D();
+Iluminacion Focos;
+Camera Camara = Camera();
 
 //Por defecto cuando iDibujo vale e se pinta loa figura de color blanco
 int iDibujo = 3;
@@ -54,7 +59,7 @@ void onMenu(int opcion) {
 
 void creacionMenu(void) {
 
-	int menuFondo, menuDibujo, menuPrincipal;
+	int menuFondo, menuDibujo, menuMaterial, menuPrincipal;
 
 	menuFondo = glutCreateMenu(onMenu);
 	glutAddMenuEntry("Negro", FONDO1);
@@ -65,6 +70,12 @@ void creacionMenu(void) {
 	glutAddMenuEntry("Blanco", DIBUJO1);
 	glutAddMenuEntry("Verde claro", DIBUJO2);
 	glutAddMenuEntry("Azul claro", DIBUJO3);
+
+	//menuMaterial = glutCreateMenu(onMenu);
+	//glutAddMenuEntry("Rojo", DIBUJO1);
+	//glutAddMenuEntry("Verde", DIBUJO2);
+	//glutAddMenuEntry("Azul", DIBUJO3);
+	//glutAddMenuEntry("Blanco", DIBUJO3);
 
 	menuPrincipal = glutCreateMenu(onMenu);
 	glutAddSubMenu("Color de fondo", menuFondo);
@@ -110,54 +121,118 @@ void onMotion(int x, int y) {
 }
 
 //Permite conocer qué tecla hemos pulsado
-void TeclaPulsada(unsigned char key, int x, int y){
+void TeclaPulsada(unsigned char key, int x, int y) {
 
-	My_Model.setTecla(key);
+	switch (key) {
+
+	//Tecla a
+	case 97:
+		My_Model.Look = alambre;
+		break;
+
+		//Tecla s
+	case 115:
+		My_Model.Look = solido;
+		break;
+
+		//Tecla d
+	case 100:
+		My_Model.Look = plana;
+		break;
+
+		//Tecla f
+	case 102:
+		My_Model.Look = suave;
+		break;
+
+	case 48:
+		Focos.SeleccionarFoco(0);
+		break;
+	case 49:
+		Focos.SeleccionarFoco(1);
+		break;
+	case 50:
+		Focos.SeleccionarFoco(2);
+		break;
+	case 51:
+		Focos.SeleccionarFoco(3);
+		break;
+
+		//Materiales
+
+	//Tecla r
+	case 114:
+		My_Model.material = rojo;
+		break;
+
+	//Tecla b de blue
+	case 98:
+		My_Model.material = azul;
+		break;
+
+	//Tecla g de green
+	case 103:
+		My_Model.material = verde;
+		break;
+
+	//Tecla w de white
+	case 119:
+		My_Model.material = blanco;
+		break;
+
+	}
+
+}
+
+void initGL() {
+
+	glEnable(GL_NORMALIZE);
+	glEnable(GL_CULL_FACE);
+	glEnable(GL_LIGHTING);
+
 }
 
 void DibujarFigura() {
 
 	//Matriz de floats que contiene los valores de los distintos colores
 	float colores[6][3] = { { 0.00f, 0.00f, 0.00f }, // 0 - negro
-				{ 0.06f, 0.25f, 0.13f }, // 1 - verde oscuro
-				{ 0.10f, 0.07f, 0.33f }, // 2 - azul oscuro
-				{ 1.00f, 1.00f, 1.00f }, // 3 - blanco
-				{ 0.12f, 0.50f, 0.26f }, // 4 - verde claro
-				{ 0.20f, 0.14f, 0.66f }, // 5 - azul claro
-				};
+			{ 0.06f, 0.25f, 0.13f }, // 1 - verde oscuro
+			{ 0.10f, 0.07f, 0.33f }, // 2 - azul oscuro
+			{ 1.00f, 1.00f, 1.00f }, // 3 - blanco
+			{ 0.12f, 0.50f, 0.26f }, // 4 - verde claro
+			{ 0.20f, 0.14f, 0.66f }, // 5 - azul claro
+			};
 
 	//Pasamos al Draw_Model los valores del fondo y del color de las alambres o de las caras
-	My_Model.Draw_Model(0.0, 20, colores[iFondo], colores[iDibujo]);
+	My_Model.Draw_Model(0.009, 20, colores[iFondo], colores[iDibujo]);
 }
 
-void PintarModelo() {
+void Pintar() {
 
-	//Permite dibujar la figura que nosotros hayamos definido
+//Permite dibujar la figura que nosotros hayamos definido
 	glutDisplayFunc(DibujarFigura);
 
-
-	//Se llama a una función capaz de crear un menú con diversas
-	//funciones.
+//Se llama a una función capaz de crear un menú con diversas
+//funciones.
 	creacionMenu();
 
-	//Función que nos permite interactuar con la figura. Permite
-	//realizar rotaciones en la figura cuando dejamos pulsado el
-	//ratón.
+//Función que nos permite interactuar con la figura. Permite
+//realizar rotaciones en la figura cuando dejamos pulsado el
+//ratón.
 	glutMouseFunc(onMouse);
 
-	//Establece el giro de la figura modificando sus respectivos alfa
-	//y beta.
+//Establece el giro de la figura modificando sus respectivos alfa
+//y beta.
 	glutMotionFunc(onMotion);
 
-	//glutIdleFunc permite dibujar la esfera cuando la ventana
-	//está inactiva. Si no llamamos a esta función la ventana
-	//aparecerá inicialmente de color blanco sin mostrar nuestra figura.
-	//Sólo haría falta hacer click sobre la ventana para que se vea la figura.
+//glutIdleFunc permite dibujar la esfera cuando la ventana
+//está inactiva. Si no llamamos a esta función la ventana
+//aparecerá inicialmente de color blanco sin mostrar nuestra figura.
+//Sólo haría falta hacer click sobre la ventana para que se vea la figura.
 	glutIdleFunc(DibujarFigura);
 
-
-	//Mediante glutKeyboardFunc cambiamos la pintura del
-	//elemento que se muestra en la pantalla
+//Mediante glutKeyboardFunc cambiamos la pintura del
+//elemento que se muestra en la pantalla
 	glutKeyboardFunc(TeclaPulsada);
 
 }
@@ -170,7 +245,8 @@ int main(int argc, char **argv) {
 	glutInitWindowSize(400, 400);
 	glutInitWindowPosition(100, 100);
 	window = glutCreateWindow("Planetario");
-	PintarModelo();
+	initGL();
+	Pintar();
 	glutMainLoop();
 
 }

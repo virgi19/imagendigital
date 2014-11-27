@@ -11,18 +11,14 @@
 #ifndef ILUMINACION_H_
 #define ILUMINACION_H_
 
-
 class Iluminacion {
+
 public:
 	Iluminacion();
 
-	void ActivarIluminacionConstante();
-	void DesactivarIluminacionConstante();
-
-	void ActivarIluminacionSuave();
-	void DesactivarIluminacionSuave();
-
 	~Iluminacion();
+
+	void SeleccionarFoco(int Nfoco);
 };
 
 #endif /* ILUMINACION_H_ */

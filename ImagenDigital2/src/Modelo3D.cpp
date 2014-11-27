@@ -6,10 +6,12 @@ Modelo3D::Modelo3D() {
 	setVertices(0);
 	this->alfa = 0;
 	this->beta = 0;
-	this->tecla = 0;
 	this->Model_color[0] = 1.0;
 	this->Model_color[1] = 1.0;
 	this->Model_color[2] = 1.0;
+	ilum = Iluminacion();
+	Look = alambre;
+	material = rojo;
 }
 
 Modelo3D::Modelo3D(const int ncaras, const int nvertices) {
@@ -54,14 +56,6 @@ int Modelo3D::getVertices() {
 void Modelo3D::setVertices(const int val) {
 
 	this->_NumVertices = val;
-}
-
-unsigned Modelo3D::getTecla() {
-	return tecla;
-}
-
-void Modelo3D::setTecla(unsigned tecla) {
-	this->tecla = tecla;
 }
 
 void Modelo3D::setModelColor(float color[]) {
@@ -165,6 +159,10 @@ const Normal& Modelo3D::CargarNormales(int FaceNumber) {
 //es decir, necesitamos hacer un glBegin(GL_TRIANGLES)
 void Modelo3D::PintarSolido() {
 
+	glDisable(GL_LIGHTING);
+	glColor3f(Model_color[0], Model_color[1], Model_color[2]);
+	glBegin(GL_TRIANGLES);
+
 	for (int i = 0; i < this->ListaCaras.size(); i++) {
 
 		//glPopMatrix();
@@ -172,11 +170,6 @@ void Modelo3D::PintarSolido() {
 
 		//Establecer un color sólido basándonos
 		//en un relleno con triángulos
-		glBegin(GL_TRIANGLES);
-		glEnable(GL_LIGHTING);
-		glEnable(GL_LIGHT0);
-
-		glColor3f(Model_color[0], Model_color[1], Model_color[2]);
 
 		glVertex3f(ListaPuntos3D[ListaCaras[i].getA()].getX(),
 				ListaPuntos3D[ListaCaras[i].getA()].getY(),
@@ -189,18 +182,18 @@ void Modelo3D::PintarSolido() {
 		glVertex3f(ListaPuntos3D[ListaCaras[i].getC()].getX(),
 				ListaPuntos3D[ListaCaras[i].getC()].getY(),
 				ListaPuntos3D[ListaCaras[i].getC()].getZ());
-		//glColor3f(0.0f, 0.0f, 1.0f);
-		glVertex3f(ListaPuntos3D[ListaCaras[i].getA()].getX(),
-				ListaPuntos3D[ListaCaras[i].getA()].getY(),
-				ListaPuntos3D[ListaCaras[i].getA()].getZ());
-
-		glDisable(GL_LIGHTING);
-		glEnd();
 
 	}
+
+	glEnable(GL_LIGHTING);
+	glEnd();
 }
 
 void Modelo3D::PintarAlambres() {
+
+	glDisable(GL_LIGHTING);
+	glColor3f(Model_color[0], Model_color[1], Model_color[2]);
+	glBegin(GL_LINES);
 
 	for (int i = 0; i < this->ListaCaras.size(); i++) {
 
@@ -209,12 +202,8 @@ void Modelo3D::PintarAlambres() {
 
 		//Establecer un color sólido
 		//glBegin(GL_POLYGON);
-		glBegin(GL_LINES);
-		glEnable(GL_LIGHTING);
-		glEnable(GL_LIGHT0);
 
 		//Aquí establecemos el color de las alambres
-		glColor3f(Model_color[0], Model_color[1], Model_color[2]);
 
 		glVertex3f(ListaPuntos3D[ListaCaras[i].getA()].getX(),
 				ListaPuntos3D[ListaCaras[i].getA()].getY(),
@@ -232,18 +221,14 @@ void Modelo3D::PintarAlambres() {
 				ListaPuntos3D[ListaCaras[i].getA()].getY(),
 				ListaPuntos3D[ListaCaras[i].getA()].getZ());
 
-		glDisable(GL_LIGHT0);
-		glDisable(GL_LIGHTING);
-		glEnd();
-
 	}
+	glEnd();
+	glEnable(GL_LIGHTING);
 }
 
 void Modelo3D::Draw_Model(float scale_from_editor, int size_axes,
 		float colorFondo[], float colorAlambre[]) {
 
-	GLfloat material_difuso[4], material_ambiente[4], material_specular[4],
-			material_emission[4];
 	GLfloat luzdifusa[4], luzambiente[4], luzspecular[4], posicion0[4],
 			rotacion[4];
 	GLfloat brillo;
@@ -255,157 +240,64 @@ void Modelo3D::Draw_Model(float scale_from_editor, int size_axes,
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(20.0f, 1.0f, 1.0f, 10.0f);
+	gluPerspective(60.0f, 1.0f, 1.0f, 10.0f);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	gluLookAt(0.0f, 0.0f, 5.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
-	glScalef(0.003, 0.003, 0.003);
+	glScalef(scale_from_editor, scale_from_editor, scale_from_editor);
 	glRotated(this->alfa, 1.0f, 0.0f, 0.0f);
 	glRotated(this->beta, 0.0f, 1.0f, 0.0f);
 
 	//Poner color al modelo
 	setModelColor(colorAlambre);
-	TipoPintura();
+	SetMaterial();
 	PintarEjes();
+	Pintar();
+	cout << "Valor de look: " << Look << endl;
 
 	glFlush();
 	glutSwapBuffers();
 
 }
 
-void Modelo3D::IluminacionPlana(){
+void Modelo3D::IluminacionPlana() {
+
+	glEnable(GL_LIGHTING);
+	glShadeModel(GL_FLAT);
+	glBegin(GL_TRIANGLES);
 
 	for (int i = 0; i < this->ListaCaras.size(); i++) {
 
-			//glPopMatrix();
-			//glPushMatrix();
+		glNormal3f(ListaCaras[i].getNormal().getA(),
+				ListaCaras[i].getNormal().getB(),
+				ListaCaras[i].getNormal().getC());
 
-			//Establecer un color sólido basándonos
-			//en un relleno con triángulos
+		glVertex3f(ListaPuntos3D[ListaCaras[i].getA()].getX(),
+				ListaPuntos3D[ListaCaras[i].getA()].getY(),
+				ListaPuntos3D[ListaCaras[i].getA()].getZ());
 
-			glEnable(GL_NORMALIZE);
-			glEnable(GL_CULL_FACE);
+		//glColor3f(0.0f, 0.0f, 1.0f);
+		glVertex3f(ListaPuntos3D[ListaCaras[i].getB()].getX(),
+				ListaPuntos3D[ListaCaras[i].getB()].getY(),
+				ListaPuntos3D[ListaCaras[i].getB()].getZ());
 
-			GLfloat posicion[] = {10.0f, 10.0f, 10.0f, 0.0f};
-			GLfloat ambiente[] = {0.5f, 0.25f, 0.5f, 0.0f};
-			GLfloat difusa[] = {1.0f, 1.0f, 0.25f, 0.5f};
-			GLfloat especular[] = {1.0f, 0.0f, 0.25f, 1.0f};
+		//glColor3f(0.0f, 0.0f, 1.0f);
+		glVertex3f(ListaPuntos3D[ListaCaras[i].getC()].getX(),
+				ListaPuntos3D[ListaCaras[i].getC()].getY(),
+				ListaPuntos3D[ListaCaras[i].getC()].getZ());
 
-			GLfloat direccion[] = { ListaCaras[i].getNormal().getA(),
-					ListaCaras[i].getNormal().getB(),
-					ListaCaras[i].getNormal().getC() };
-
-			//GLfloat direccionNormal[] = { 0.0, 1.0, 0.0, 0.0 };
-			//GLfloat light0pos[] = { 1.0, 2.0, 3.0, 1.0 };
-
-			//Distinto de uno el foco se mueve
-
-			//GLfloat color[] = { Model_color[0], Model_color[1], Model_color[2] };
-
-			glEnable(GL_LIGHTING);
-			glLightfv(GL_LIGHT1, GL_AMBIENT, ambiente);
-			glLightfv(GL_LIGHT1, GL_DIFFUSE, difusa);
-			glLightfv(GL_LIGHT1, GL_SPECULAR, especular);
-			glLightfv(GL_LIGHT1, GL_POSITION, posicion);
-
-			GLfloat posicion2[] = {50.0f, 50.0f, 10.0f, 0.0f};
-			GLfloat ambiente2[] = {0.5f, 0.5f, 0.5f, 0.0f};
-			GLfloat difusa2[] = {1.0f, 1.0f, 0.0f, 1.0f};
-			GLfloat especular2[]={0.5f, 0.0f, 0.0f, 1.0f};
-			glLightfv(GL_LIGHT2, GL_POSITION, posicion2);
-			glLightfv(GL_LIGHT2, GL_AMBIENT, ambiente2);
-			glLightfv(GL_LIGHT2, GL_SPECULAR, difusa2);
-			glLightfv(GL_LIGHT2, GL_DIFFUSE, especular2);
-
-			glEnable(GL_LIGHT1);
-			glEnable(GL_LIGHT2);
-			glEnable(GL_LIGHT3);
-			glShadeModel(GLU_SMOOTH);
-
-			glBegin(GL_TRIANGLES);
-			glColor3f(Model_color[0], Model_color[1], Model_color[2]);
-
-			glNormal3f(ListaPuntos3D[ListaCaras[i].getA()].getX(),
-					ListaPuntos3D[ListaCaras[i].getA()].getY(),
-					ListaPuntos3D[ListaCaras[i].getA()].getZ());
-			glVertex3f(ListaPuntos3D[ListaCaras[i].getA()].getX(),
-					ListaPuntos3D[ListaCaras[i].getA()].getY(),
-					ListaPuntos3D[ListaCaras[i].getA()].getZ());
-
-			//glColor3f(0.0f, 0.0f, 1.0f);
-			glVertex3f(ListaPuntos3D[ListaCaras[i].getB()].getX(),
-					ListaPuntos3D[ListaCaras[i].getB()].getY(),
-					ListaPuntos3D[ListaCaras[i].getB()].getZ());
-
-			//glColor3f(0.0f, 0.0f, 1.0f);
-			glVertex3f(ListaPuntos3D[ListaCaras[i].getC()].getX(),
-					ListaPuntos3D[ListaCaras[i].getC()].getY(),
-					ListaPuntos3D[ListaCaras[i].getC()].getZ());
-
-			//glColor3f(0.0f, 0.0f, 1.0f);
-			glVertex3f(ListaPuntos3D[ListaCaras[i].getA()].getX(),
-					ListaPuntos3D[ListaCaras[i].getA()].getY(),
-					ListaPuntos3D[ListaCaras[i].getA()].getZ());
-
-			glEnd();
-			glDisable(GL_LIGHT3);
-			glDisable(GL_LIGHT2);
-			glDisable(GL_LIGHT1);
-			glDisable(GL_LIGHTING);
 	}
+
+	glEnd();
 }
 
 void Modelo3D::IluminacionSuave() {
 
+	glEnable(GL_LIGHTING);
+	glShadeModel(GL_SMOOTH);
+	glBegin(GL_TRIANGLES);
+
 	for (int i = 0; i < this->ListaCaras.size(); i++) {
-
-		//glPopMatrix();
-		//glPushMatrix();
-
-		//Establecer un color sólido basándonos
-		//en un relleno con triángulos
-
-		glEnable(GL_NORMALIZE);
-		glEnable(GL_CULL_FACE);
-
-		GLfloat posicion[] = {10.0f, 10.0f, 10.0f, 0.0f};
-		GLfloat ambiente[] = {0.5f, 0.25f, 0.5f, 0.0f};
-		GLfloat difusa[] = {1.0f, 1.0f, 0.25f, 0.5f};
-		GLfloat especular[] = {1.0f, 0.0f, 0.25f, 1.0f};
-
-		GLfloat direccion[] = { ListaCaras[i].getNormal().getA(),
-				ListaCaras[i].getNormal().getB(),
-				ListaCaras[i].getNormal().getC() };
-
-		//GLfloat direccionNormal[] = { 0.0, 1.0, 0.0, 0.0 };
-		//GLfloat light0pos[] = { 1.0, 2.0, 3.0, 1.0 };
-
-		//Distinto de uno el foco se mueve
-
-		//GLfloat color[] = { Model_color[0], Model_color[1], Model_color[2] };
-
-		glEnable(GL_LIGHTING);
-		glLightfv(GL_LIGHT1, GL_AMBIENT, ambiente);
-		glLightfv(GL_LIGHT1, GL_DIFFUSE, difusa);
-		glLightfv(GL_LIGHT1, GL_SPECULAR, especular);
-		glLightfv(GL_LIGHT1, GL_POSITION, posicion);
-
-		GLfloat posicion2[] = {50.0f, 50.0f, 10.0f, 0.0f};
-		GLfloat ambiente2[] = {0.5f, 0.5f, 0.5f, 0.0f};
-		GLfloat difusa2[] = {1.0f, 1.0f, 0.0f, 1.0f};
-		GLfloat especular2[]={0.5f, 0.0f, 0.0f, 1.0f};
-		glLightfv(GL_LIGHT2, GL_POSITION, posicion2);
-		glLightfv(GL_LIGHT2, GL_AMBIENT, ambiente2);
-		glLightfv(GL_LIGHT2, GL_SPECULAR, difusa2);
-		glLightfv(GL_LIGHT2, GL_DIFFUSE, especular2);
-
-		glEnable(GL_LIGHT1);
-		glEnable(GL_LIGHT2);
-		glEnable(GL_LIGHT3);
-		glShadeModel(GLU_SMOOTH);
-
-		glBegin(GL_TRIANGLES);
-		glColor3f(Model_color[0], Model_color[1], Model_color[2]);
 
 		glNormal3f(ListaPuntos3D[ListaCaras[i].getA()].getX(),
 				ListaPuntos3D[ListaCaras[i].getA()].getY(),
@@ -430,51 +322,35 @@ void Modelo3D::IluminacionSuave() {
 				ListaPuntos3D[ListaCaras[i].getC()].getY(),
 				ListaPuntos3D[ListaCaras[i].getC()].getZ());
 
-		//glColor3f(0.0f, 0.0f, 1.0f);
-		glNormal3f(ListaPuntos3D[ListaCaras[i].getA()].getX(),
-				ListaPuntos3D[ListaCaras[i].getA()].getY(),
-				ListaPuntos3D[ListaCaras[i].getA()].getZ());
-		glVertex3f(ListaPuntos3D[ListaCaras[i].getA()].getX(),
-				ListaPuntos3D[ListaCaras[i].getA()].getY(),
-				ListaPuntos3D[ListaCaras[i].getA()].getZ());
-
-		glEnd();
-		glDisable(GL_LIGHT3);
-		glDisable(GL_LIGHT2);
-		glDisable(GL_LIGHT1);
-		glDisable(GL_LIGHTING);
-
 	}
+
+	glEnd();
 }
 
 //Función para elegir entre el tipo de pintura que queremos
 //es decir, sólido o alambre
-void Modelo3D::TipoPintura() {
+void Modelo3D::Pintar() {
 
-	switch (getTecla()) {
+	switch (Look) {
 
 	//Tecla a
-	case 97:
+	case alambre:
 		PintarAlambres();
 		break;
 
-	//Tecla s
-	case 115:
+		//Tecla s
+	case solido:
 		PintarSolido();
 		break;
 
-	//Tecla d
-	case 100:
+		//Tecla d
+	case plana:
 		IluminacionPlana();
 		break;
 
-	//Tecla f
-	case 102:
+		//Tecla f
+	case suave:
 		IluminacionSuave();
-		break;
-
-	default:
-		PintarAlambres();
 		break;
 
 	}
@@ -502,6 +378,41 @@ void Modelo3D::PintarEjes() {
 	glVertex3f(0.0f, 0.0f, 0.0f);
 	glVertex3f(400.0f, 400.0f, -4.0f);
 	glEnd();
+}
+
+void Modelo3D::SetMaterial() {
+
+	switch (material) {
+	case rojo: {
+		float valorDifuso[] = { 1.0f, 0.0f, 1.0f, 1.0f };
+		GLfloat valorEspecular[] = { 1.0f, 0.0f, 1.0f, 1.0f };
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, valorDifuso);
+		glMaterialfv(GL_FRONT, GL_SPECULAR, valorEspecular);
+		break;
+	}
+	case verde: {
+		float valorDifuso[] = { 0.12f, 0.50f, 0.26f, 1.0f };
+		GLfloat valorEspecular[] = { 1.0f, 0.0f, 1.0f, 1.0f };
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, valorDifuso);
+		glMaterialfv(GL_FRONT, GL_SPECULAR, valorEspecular);
+		break;
+	}
+	case azul: {
+		float valorDifuso[] = { 0.20f, 0.14f, 0.66f, 1.0f };
+		GLfloat valorEspecular[] = { 1.0f, 0.0f, 1.0f, 1.0f };
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, valorDifuso);
+		glMaterialfv(GL_FRONT, GL_SPECULAR, valorEspecular);
+		break;
+	}
+
+	case blanco: {
+		float valorDifuso[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+		GLfloat valorEspecular[] = { 1.0f, 0.0f, 1.0f, 1.0f };
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, valorDifuso);
+		glMaterialfv(GL_FRONT, GL_SPECULAR, valorEspecular);
+		break;
+	}
+	}
 }
 
 Modelo3D::~Modelo3D() {
